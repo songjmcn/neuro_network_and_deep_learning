@@ -1,0 +1,29 @@
+%ÑµÁ·²¢ÇÒ²âÊÔBP
+net=buildBp(28*28,50,10);
+train_samples=loadMNISTImages('mnist/train-images-idx3-ubyte');
+train_labels=loadMNISTLabels('mnist/train-labels-idx1-ubyte');
+train_labels=train_labels+1;
+test_samples=loadMNISTImages('mnist/t10k-images-idx3-ubyte');
+test_labels=loadMNISTLabels('mnist/t10k-labels-idx1-ubyte');
+test_labels=test_labels+1;
+n_train=size(train_samples,2);
+eta=0.05;
+loop=500;
+bitch_size=500;
+start_index=1;
+n_train=floor(n_train/bitch_size);
+best=1;
+for ii=1:loop
+    fprintf('µÚ%gÌËÑµÁ·\n',ii);
+    start_index=1;
+    for n=1:n_train
+        end_index=n*bitch_size;
+        net=trainBp(net,train_samples(:,start_index:end_index),train_labels(start_index:end_index),eta);
+        start_index=end_index+1;
+    end
+    error=testBp(net,test_samples,test_labels);
+    fprintf('µÚ%gÌËÑµÁ·£¬²âÊÔ´íÎóÂÊÎª%g%%\n',ii,error*100);
+    if(error<best)
+        best=error;
+    end
+end
